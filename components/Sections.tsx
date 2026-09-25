@@ -97,7 +97,7 @@ export function Hero() {
         <div className="hero-visual">
           <div className="hero-frame">
             <div className="hero-image-wrap">
-              <Image key={slide.src} src={slide.src} alt={slide.alt} fill priority={index === 0} sizes="(max-width: 900px) 100vw, 54vw" className="hero-image" />
+              <Image key={slide.src} src={slide.src} alt={slide.alt} fill priority={index === 0} sizes="(max-width: 900px) 100vw, 54vw" className="hero-image" style={{ objectPosition: index === 0 ? "42% center" : "center center" }} />
               <div className="hero-image-shade" />
               <div className="hero-image-label"><span>{slide.label}</span><b>{slide.headline}</b></div>
             </div>
