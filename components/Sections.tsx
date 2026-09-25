@@ -222,9 +222,19 @@ function DatePicker({ value, onChange }: { value: string; onChange: (value: stri
     return day > 0 && day <= daysInMonth ? new Date(year, month, day) : null;
   });
   const selected = value ? new Date(`${value}T12:00:00`) : null;
-  const today = new Date();
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const isCurrentMonth =
+    year === today.getFullYear() && month === today.getMonth();
+
+  function isPastDate(date: Date) {
+    const candidate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return candidate < today;
+  }
 
   function choose(date: Date) {
+    if (isPastDate(date)) return;
     onChange(toIsoDate(date));
     setOpen(false);
   }
@@ -240,7 +250,16 @@ function DatePicker({ value, onChange }: { value: string; onChange: (value: stri
           <div className="calendar-head">
             <strong>{viewDate.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}</strong>
             <div className="calendar-nav">
-              <button type="button" onClick={() => setViewDate(new Date(year, month - 1, 1))} aria-label="Previous month"><ChevronLeft size={16} /></button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isCurrentMonth) setViewDate(new Date(year, month - 1, 1));
+                }}
+                disabled={isCurrentMonth}
+                aria-label="Previous month"
+              >
+                <ChevronLeft size={16} />
+              </button>
               <button type="button" onClick={() => setViewDate(new Date(year, month + 1, 1))} aria-label="Next month"><ChevronRight size={16} /></button>
             </div>
           </div>
@@ -251,7 +270,19 @@ function DatePicker({ value, onChange }: { value: string; onChange: (value: stri
               const iso = toIsoDate(date);
               const isSelected = selected?.getFullYear() === date.getFullYear() && selected?.getMonth() === date.getMonth() && selected?.getDate() === date.getDate();
               const isToday = today.getFullYear() === date.getFullYear() && today.getMonth() === date.getMonth() && today.getDate() === date.getDate();
-              return <button key={iso} type="button" className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}`} onClick={() => choose(date)}>{date.getDate()}</button>;
+              const isPast = isPastDate(date);
+              return (
+                <button
+                  key={iso}
+                  type="button"
+                  disabled={isPast}
+                  aria-disabled={isPast}
+                  className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}`}
+                  onClick={() => choose(date)}
+                >
+                  {date.getDate()}
+                </button>
+              );
             })}
           </div>
           <div className="calendar-foot">
