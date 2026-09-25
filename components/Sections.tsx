@@ -36,18 +36,78 @@ const heroSlides = [
 export function CursorFog() {
   useEffect(() => {
     const root = document.documentElement;
+
     let raf = 0;
+    let targetX = window.innerWidth * 0.5;
+    let targetY = window.innerHeight * 0.5;
+    let currentX = targetX;
+    let currentY = targetY;
+    let previousX = targetX;
+    let previousY = targetY;
+    let velocity = 0;
+    let targetVelocity = 0;
+    let angle = 0;
+    let active = false;
+
+    const clamp = (value: number, min: number, max: number) =>
+      Math.min(Math.max(value, min), max);
+
     const move = (event: MouseEvent) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        root.style.setProperty('--mx', `${event.clientX}px`);
-        root.style.setProperty('--my', `${event.clientY}px`);
-      });
+      targetX = event.clientX;
+      targetY = event.clientY;
+      active = true;
+
+      const dx = targetX - previousX;
+      const dy = targetY - previousY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      targetVelocity = clamp(distance / 28, 0, 1.8);
+
+      if (distance > 0.5) {
+        angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      }
+
+      previousX = targetX;
+      previousY = targetY;
     };
+
+    const leave = () => {
+      active = false;
+      targetVelocity = 0;
+    };
+
+    const animate = () => {
+      // Smooth pointer easing — the fog follows the cursor instead of
+      // snapping directly to it, creating the soft "floating mist" feel.
+      currentX += (targetX - currentX) * 0.105;
+      currentY += (targetY - currentY) * 0.105;
+      velocity += (targetVelocity - velocity) * 0.09;
+
+      root.style.setProperty('--mx', `${currentX}px`);
+      root.style.setProperty('--my', `${currentY}px`);
+      root.style.setProperty('--fog-velocity', velocity.toFixed(3));
+      root.style.setProperty('--fog-angle', `${angle}deg`);
+      root.style.setProperty(
+        '--fog-scale',
+        (1 + velocity * 0.24).toFixed(3),
+      );
+      root.style.setProperty(
+        '--fog-opacity',
+        active ? (0.62 + velocity * 0.16).toFixed(3) : '0.38',
+      );
+
+      raf = requestAnimationFrame(animate);
+    };
+
     window.addEventListener('mousemove', move, { passive: true });
+    window.addEventListener('mouseleave', leave);
+
+    raf = requestAnimationFrame(animate);
+
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseleave', leave);
     };
   }, []);
 
