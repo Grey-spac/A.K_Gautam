@@ -40,11 +40,13 @@ export const metadata: Metadata = {
     canonical: '/',
   },
 
+  // Google Search Console + Microsoft Bing Webmaster + Yandex Webmaster
   verification: {
     google: 'uBYJHR41QrGiVQ1VR-iXbrfdO_dIfCRmfxrDdmcrdKQ',
 
     other: {
       'msvalidate.01': '31D786D61FBD2BDFED13823755947300',
+      yandex: 'e972c76fe4a37c19',
     },
   },
 
