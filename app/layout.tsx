@@ -5,15 +5,21 @@ import { site } from '../constants/site';
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || 'https://akgautam.vercel.app';
 
+const seoTitle =
+  'A.K. Gautam Traders | Building Material Supplier in Jhansi';
+
+const seoDescription =
+  'A.K. Gautam Traders supplies cement, steel, sand, bricks and construction materials in Jhansi for homes, builders and commercial projects.';
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default: 'A.K. Gautam Traders | Building Material Supplier in Jhansi',
+    default: seoTitle,
     template: '%s | A.K. Gautam Traders',
   },
 
-  description: site.description,
+  description: seoDescription,
 
   keywords: [
     'A.K. Gautam Traders',
@@ -35,22 +41,19 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    // Google Search Console verification
     google: 'uBYJHR41QrGiVQ1VR-iXbrfdO_dIfCRmfxrDdmcrdKQ',
 
-    // Bing Webmaster Tools verification
     other: {
       'msvalidate.01': '31D786D61FBD2BDFED13823755947300',
     },
   },
 
   openGraph: {
-    title: 'A.K. Gautam Traders | Building Material Supplier in Jhansi',
-    description: site.description,
+    title: seoTitle,
+    description: seoDescription,
     type: 'website',
     locale: 'en_IN',
     siteName: site.name,
-
     url: siteUrl,
 
     images: [
@@ -58,15 +61,15 @@ export const metadata: Metadata = {
         url: '/images/hero-group.png',
         width: 1672,
         height: 941,
-        alt: 'A.K. Gautam Traders team and office',
+        alt: 'A.K. Gautam Traders team and office in Jhansi',
       },
     ],
   },
 
   twitter: {
     card: 'summary_large_image',
-    title: 'A.K. Gautam Traders | Building Material Supplier in Jhansi',
-    description: site.description,
+    title: seoTitle,
+    description: seoDescription,
     images: ['/images/hero-group.png'],
   },
 
@@ -93,7 +96,7 @@ const organizationJsonLd = {
   '@type': 'LocalBusiness',
 
   name: site.name,
-  description: site.description,
+  description: seoDescription,
 
   telephone: '+91 9454794715',
   email: site.email,
